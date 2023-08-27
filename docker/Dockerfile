@@ -18,19 +18,22 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && apt-get update && apt-get install -y google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
-
+# Install Python
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
-RUN useradd -ms /bin/bash user
-USER user
-WORKDIR /home/user/app
+# RUN useradd -ms /bin/bash user
+# USER user
+# WORKDIR /home/user/app
+WORKDIR /app
 
-COPY ./config/requirements.txt /home/user/app
+# COPY ./config/requirements.txt /home/user/app
+COPY ./config/requirements.txt /app
 RUN pip install -r requirements.txt
 
-COPY ./scripts /home/user/app
+# COPY ./scripts /home/user/app
+COPY ./scripts /app
 
-ENV DISPLAY=:99
+# ENV DISPLAY=:99
 
 CMD ["./scripts/start.sh"]

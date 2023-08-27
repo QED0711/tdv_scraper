@@ -1,31 +1,30 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
+from classes.browser_interface import BrowserInterface
 
 DRIVER_PATH = '/usr/lib/chromium-browser/chromedriver'
 
 def main():
-    chrome_options = Options()
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument('--remote-debugging-port=9222')
-    chrome_options.add_argument('--user-data-dir=/home/user/app/browser_data')
 
-    # chrome_options.add_argument('--display=:99')
-    chrome_options.add_argument('--no-gpu')
+    browser = BrowserInterface(
+        option_args=[
+            "no-sandbox", 
+            "disable-dev-shm-usage", 
+            "remote-debugging-port=9222", 
+            "user-data-dir=/app/browser_data",
+            "no-gpu" 
+        ],
+        load_script="console.log('HELLO WORLD FROM SELENIUM')"
+        )
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    
     try:
-        driver.get("https://www.tradingview.com/chart")
-        while True:
+        # browser.open("https://www.tradingview.com/chart")
+        browser.open("https://google.com")
+        while True: # keep the process alive
             pass
+    except KeyboardInterrupt:
+        print("USER TERMINATION")
     except Exception as e:
         print(str(e))
-    finally:
-        print("SUCCESS - CLOSING")
-        # driver.quit()
 
 if __name__ == "__main__":
     main()

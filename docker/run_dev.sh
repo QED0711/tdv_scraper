@@ -1,13 +1,13 @@
 #!/bin/bash
 xhost +
 
-docker run --rm -ti -d \
+docker run --rm -ti \
     --name tdv_scraper \
-    -v $PWD/:/home/user/app \
+    -v $PWD/:/app/ \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     tdv_scraper:latest
-    # bash
     # ./scripts/start.sh 
+    # bash
 
 # docker exec -ti tdv_scraper bash;
