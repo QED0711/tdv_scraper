@@ -1,3 +1,5 @@
+import os
+
 from typing import Union, List
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -7,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class BrowserInterface:
 
-    def __init__(self, driver=None, option_args=Union[List, None], load_script: Union[str, None]=None):
+    def __init__(self, driver=None, option_args=Union[List[str], None], js_snippets: Union[List[str], None]=None,):
         if driver is None:
             driver_options = Options()
             for arg in (option_args if option_args is not None else []):
@@ -18,8 +20,11 @@ class BrowserInterface:
 
         self.action = ActionChains(self.driver)
 
-        if load_script is not None:
-            self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": load_script})
+        if js_snippets is not None:
+            for path in js_snippets:
+                with open(path, "r") as js:
+                    script = js.read()
+                    self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": script})
 
     def open(self, url):
         self.driver.get(url)

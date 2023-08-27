@@ -13,7 +13,7 @@ def main():
             "user-data-dir=/app/browser_data",
             "no-gpu" 
         ],
-        load_script="console.log('HELLO WORLD FROM SELENIUM')"
+        js_snippets=["/app/javascript/test.js", "/app/javascript/otherTest.js"],
         )
 
     try:
