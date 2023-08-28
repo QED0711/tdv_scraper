@@ -20,18 +20,39 @@ class BrowserInterface:
 
         self.action = ActionChains(self.driver)
 
+        self.symbol_selectors = {}
+
         if js_snippets is not None:
             for path in js_snippets:
                 with open(path, "r") as js:
                     script = js.read()
                     self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": script})
 
+    #####################
+    ##### UTILITIES #####
+    #####################
+
+    def _click_element(self, element):
+        self.action.move_to_element(element).click().perform()
+
+    def _get_chart_data(self):
+        return self.driver.execute_script("return window._activeChart;")
+
+
+
     def open(self, url):
         self.driver.get(url)
 
     def get_symbols(self,):
-        self.symbol_elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("div[draggable=true]")""")
-
-        print(self.symbol_elements)
+        elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")
+        for element in elements:
+            self.symbol_selectors[element.get_attribute("innerText")] = element
+        return self.symbol_selectors
         # TODO: write utility functions to "click" and element (move mouse to and click)
         # once we have the symbols, parse out the symbol name and store in dict in this format {sym_name: element}
+
+
+    def change_symbol(self, symbol: str):
+       element = self.symbol_selectors.get(symbol)
+       if element is not None:
+           self._click_element(element)

@@ -6,7 +6,9 @@ docker run --rm -ti \
     -v $PWD/:/app/ \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    tdv_scraper:latest
+    -p 8888:8888 \
+    tdv_scraper:latest \
+    ./scripts/jn.sh
     # ./scripts/start.sh 
     # bash
 

@@ -14,7 +14,7 @@ def main():
             "no-gpu" 
         ],
         js_snippets=["/app/javascript/test.js", "/app/javascript/otherTest.js"],
-        )
+    )
 
     try:
         browser.open("https://www.tradingview.com/chart")
