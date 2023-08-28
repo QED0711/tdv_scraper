@@ -1,4 +1,4 @@
-
+import time, pdb
 from classes.browser_interface import BrowserInterface
 
 DRIVER_PATH = '/usr/lib/chromium-browser/chromedriver'
@@ -17,8 +17,11 @@ def main():
         )
 
     try:
-        # browser.open("https://www.tradingview.com/chart")
-        browser.open("https://google.com")
+        browser.open("https://www.tradingview.com/chart")
+        time.sleep(10)
+        browser.get_symbols()
+        pdb.set_trace()
+        # browser.open("https://google.com")
         while True: # keep the process alive
             pass
     except KeyboardInterrupt:

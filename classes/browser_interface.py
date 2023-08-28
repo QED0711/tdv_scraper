@@ -28,3 +28,10 @@ class BrowserInterface:
 
     def open(self, url):
         self.driver.get(url)
+
+    def get_symbols(self,):
+        self.symbol_elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("div[draggable=true]")""")
+
+        print(self.symbol_elements)
+        # TODO: write utility functions to "click" and element (move mouse to and click)
+        # once we have the symbols, parse out the symbol name and store in dict in this format {sym_name: element}
