@@ -26,12 +26,12 @@ function listenToSocket(handler) {
 listenToSocket(({ data }) => {
     try {
         const chartDataRaw = data.match(/\[\d{10}\.\d,(\d+\.\d+,?){5}\]/g);
-        const symbolName = data.match(/"name":"\w+"/i)
+        const symbolName = data.match(/"name":"\w+"/i)?.[0]
         if (chartDataRaw.length > 200) {
+            symbol = symbolName.split(":")[1]?.slice(1,-1)
             const parsed = chartDataRaw.map(dataPoint => JSON.parse(dataPoint))
-            console.log({symbolName, data: parsed})
 
-            window._activeChart = parsed;
+            window._activeChart = {symbol, chart: parsed};
         }
     } catch (err) {}
 });
