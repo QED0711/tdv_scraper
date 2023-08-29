@@ -35,10 +35,9 @@ class BrowserInterface:
     def _click_element(self, element):
         self.action.move_to_element(element).click().perform()
 
-    def _get_chart_data(self):
-        return self.driver.execute_script("return window._activeChart;")
-
-
+    def _get_chart_data(self, key: Union[str, None]=None):
+        data = self.driver.execute_script("return window._activeChart;")
+        return data.get(key) if key is not None else data
 
     def open(self, url):
         self.driver.get(url)

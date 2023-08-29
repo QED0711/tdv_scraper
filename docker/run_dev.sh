@@ -7,8 +7,10 @@ docker run --rm -ti \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -p 8888:8888 \
-    tdv_scraper:latest \
-    ./scripts/jn.sh
+    -p 8000:8000 \
+    tdv_scraper:latest bash
+
+    # ./scripts/jn.sh
     # ./scripts/start.sh 
     # bash
 

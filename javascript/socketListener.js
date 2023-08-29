@@ -1,3 +1,9 @@
+// ============================== WEBSOCKET ==============================
+const socket = new WebSocket(`ws://localhost:8000`);
+socket.onopen = () => {
+    socket.send(JSON.stringify({ message: "Hello from selenium" }));
+};
+
 // ============================== LISTENER ==============================
 function listenToSocket(handler) {
     handler = handler || console.log;
@@ -26,12 +32,13 @@ function listenToSocket(handler) {
 listenToSocket(({ data }) => {
     try {
         const chartDataRaw = data.match(/\[\d{10}\.\d,(\d+\.\d+,?){5}\]/g);
-        const symbolName = data.match(/"name":"\w+"/i)?.[0]
+        const symbolName = data.match(/"name":"\w+"/i)?.[0];
         if (chartDataRaw.length > 200) {
-            symbol = symbolName.split(":")[1]?.slice(1,-1)
-            const parsed = chartDataRaw.map(dataPoint => JSON.parse(dataPoint))
+            symbol = symbolName.split(":")[1]?.slice(1, -1);
+            const parsed = chartDataRaw.map((dataPoint) => JSON.parse(dataPoint));
 
-            window._activeChart = {symbol, chart: parsed};
+            window._activeChart = { symbol, chart: parsed };
+            socket.send(JSON.stringify({ symbol, chart: parsed }));
         }
     } catch (err) {}
 });
