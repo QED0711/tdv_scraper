@@ -14,7 +14,8 @@ class BrowserInterface:
             driver_options = Options()
             for arg in (option_args if option_args is not None else []):
                 driver_options.add_argument(arg if arg.startswith("--") else f"--{arg}")
-            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=driver_options)
+            # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=driver_options)
+            self.driver = webdriver.Chrome(options=driver_options)
         else:
             self.driver = driver
 
@@ -41,6 +42,9 @@ class BrowserInterface:
 
     def open(self, url):
         self.driver.get(url)
+
+    def reload(self):
+        self.driver.refresh()
 
     def get_symbols(self,):
         elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")

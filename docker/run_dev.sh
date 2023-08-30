@@ -1,5 +1,6 @@
 #!/bin/bash
 xhost +
+# export DISPLAY=:0
 
 docker run --rm -ti \
     --name tdv_scraper \

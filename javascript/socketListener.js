@@ -2,13 +2,13 @@
 const socket = new WebSocket(`wss://localhost:8000`);
 socket.onopen = () => {
     setInterval(() => {
-        socket.send(JSON.stringify({heartbeat: Date.now()}))
-    }, 3000)
+        socket.send(JSON.stringify({ heartbeat: Date.now() }));
+    }, 3000);
 };
 
 socket.onclose = () => {
-    console.log("SOCKET CLOSED!!!")
-}
+    console.log("SOCKET CLOSED!!!");
+};
 
 // ============================== LISTENER ==============================
 function listenToSocket(handler) {
@@ -37,6 +37,10 @@ function listenToSocket(handler) {
 
 listenToSocket(({ data }) => {
     try {
+        const isSeriesLoading = data.match(/series_loading/i);
+        if (isSeriesLoading) {
+            console.log(data);
+        }
         const chartDataRaw = data.match(/\[\d{10}\.\d,(\d+\.\d+,?){5}\]/g);
         const symbolName = data.match(/"name":"\w+"/i)?.[0];
         if (chartDataRaw.length > 200) {
@@ -46,5 +50,7 @@ listenToSocket(({ data }) => {
             window._activeChart = { symbol, chart: parsed };
             socket.send(JSON.stringify({ symbol, chart: parsed }));
         }
-    } catch (err) {}
+    } catch (err) {
+        console.error(err);
+    }
 });
