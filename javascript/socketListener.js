@@ -1,8 +1,14 @@
 // ============================== WEBSOCKET ==============================
-const socket = new WebSocket(`ws://localhost:8000`);
+const socket = new WebSocket(`wss://localhost:8000`);
 socket.onopen = () => {
-    socket.send(JSON.stringify({ message: "Hello from selenium" }));
+    setInterval(() => {
+        socket.send(JSON.stringify({heartbeat: Date.now()}))
+    }, 3000)
 };
+
+socket.onclose = () => {
+    console.log("SOCKET CLOSED!!!")
+}
 
 // ============================== LISTENER ==============================
 function listenToSocket(handler) {

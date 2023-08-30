@@ -1,13 +1,22 @@
+#!/usr/bin/python
 import asyncio, websockets, ssl
 
 async def handler(websocket, path):
-    async for message in websocket:
-        print(message)
+    # on connection
+    print("WebSocket connection opened")
+    
+    try:
+        async for message in websocket:
+            print(message)
+            # your code here
+    
+    finally:
+        # on disconnection
+        print("WebSocket connection closed")
 
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-ssl_context.load_cert_chain("ssl/cert.pem", "ssl/key.pem")
-# TODO: do this without password protexted .pem files
+ssl_context.load_cert_chain("/app/ssl/cert.pem", "/app/ssl/key.pem")
 
 start_server = websockets.serve(handler, "0.0.0.0", 8000, ssl=ssl_context)
 
