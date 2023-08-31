@@ -39,16 +39,16 @@ listenToSocket(({ data }) => {
     try {
         const isSeriesLoading = data.match(/series_loading/i);
         if (isSeriesLoading) {
-            console.log(data);
-        }
-        const chartDataRaw = data.match(/\[\d{10}\.\d,(\d+\.\d+,?){5}\]/g);
-        const symbolName = data.match(/"name":"\w+"/i)?.[0];
-        if (chartDataRaw.length > 200) {
-            symbol = symbolName.split(":")[1]?.slice(1, -1);
-            const parsed = chartDataRaw.map((dataPoint) => JSON.parse(dataPoint));
-
-            window._activeChart = { symbol, chart: parsed };
-            socket.send(JSON.stringify({ symbol, chart: parsed }));
+            const chartDataRaw = data.match(/\[\d{10}\.\d,(\d+\.\d+,?){5}\]/g);
+            const symbolName = data.match(/"name":"\w+"/i)?.[0];
+            if (chartDataRaw?.length > 200) {
+                const parsed = chartDataRaw.map((dataPoint) => JSON.parse(dataPoint));
+                const symbol = symbolName?.split?.(":")?.[1]?.slice?.(1, -1);
+                /* TODO: when symbol is null, determine symbol by finding the current active clicked watchlist element */
+                
+                // window._activeChart = { symbol, chart: parsed };
+                socket.send(JSON.stringify({ symbol, chart: parsed }));
+            }
         }
     } catch (err) {
         console.error(err);
