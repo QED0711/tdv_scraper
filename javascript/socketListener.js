@@ -1,14 +1,48 @@
 // ============================== WEBSOCKET ==============================
-const socket = new WebSocket(`wss://localhost:8000`);
-socket.onopen = () => {
-    setInterval(() => {
-        socket.send(JSON.stringify({ heartbeat: Date.now() }));
-    }, 3000);
-};
+class Socket {
+    constructor({ url, reconnectInterval = 3000, heartbeat = 0 }) {
+        this.url = url;
+        this.ws = null;
+        this.reconnectInterval = reconnectInterval;
+        this.heartbeat = heartbeat;
+        this.connect();
+    }
 
-socket.onclose = () => {
-    console.log("SOCKET CLOSED!!!");
-};
+    connect() {
+        this.ws = new WebSocket(this.url);
+
+        this.ws.onopen = () => {
+            console.log("Socket Opened");
+            if (this.heartbeat > 0) {
+                this.heartbeatInterval = setInterval(() => {
+                    this.send({ heartbeat: Date.now() });
+                }, this.heartbeat);
+            }
+        };
+
+        this.ws.onclose = () => {
+            console.warn("Socket connection lost. Reconnecting...");
+            clearInterval(this.heartbeatInterval);
+            setTimeout(this.connect.bind(this), this.reconnectInterval);
+        };
+
+        this.ws.onerror = (err) => {
+            console.error("WebSocket Error:", err);
+        };
+    }
+
+    send(msg) {
+        if (msg === null || msg === undefined) return;
+
+        if (typeof msg === "string") {
+            this.ws.send(msg);
+        } else if (typeof msg === "object") {
+            this.ws.send(JSON.stringify(msg));
+        }
+    }
+}
+
+const SOCKET = new Socket({ url: `wss://localhost:8000`, heartbeat: 10_000, reconnectInterval: 3000 });
 
 // ============================== LISTENER ==============================
 function listenToSocket(handler) {
@@ -35,6 +69,8 @@ function listenToSocket(handler) {
     Object.defineProperty(MessageEvent.prototype, "data", property);
 }
 
+// ============================== HANDLER ==============================
+
 listenToSocket(({ data }) => {
     try {
         const isSeriesLoading = data.match(/series_loading/i);
@@ -44,11 +80,11 @@ listenToSocket(({ data }) => {
             if (chartDataRaw?.length > 200) {
                 const parsed = chartDataRaw.map((dataPoint) => JSON.parse(dataPoint));
                 let symbol = symbolName?.split?.(":")?.[1]?.slice?.(1, -1);
-                symbol ??= document.querySelector("[data-symbol-short][data-active=true]").querySelector("[class*=symbolNameText]").innerText; 
-                /* TODO: when symbol is null, determine symbol by finding the current active clicked watchlist element */
-                
-                // window._activeChart = { symbol, chart: parsed };
-                socket.send(JSON.stringify({ symbol, chart: parsed }));
+                symbol ??= document
+                    .querySelector("[data-symbol-short][data-active=true]")
+                    ?.querySelector("[class*=symbolNameText]")?.innerText;
+
+                SOCKET.send({ symbol, chart: parsed });
             }
         }
     } catch (err) {

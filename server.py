@@ -10,8 +10,9 @@ async def handler(websocket, path):
             parsed = json.loads(message)
             if("symbol" in parsed and "chart" in parsed):
                 print(parsed["symbol"], parsed["chart"][-1])
-            # your code here
-    
+            if("heartbeat" in parsed):
+                pass
+                # print("hb: ", parsed["heartbeat"])
     finally:
         # on disconnection
         print("WebSocket connection closed")
