@@ -1,4 +1,4 @@
-import os
+import time
 
 from typing import Union, List
 from selenium import webdriver
@@ -21,7 +21,7 @@ class BrowserInterface:
 
         self.action = ActionChains(self.driver)
 
-        self.symbol_selectors = {}
+        self.watchlist_selectors = {}
 
         if js_snippets is not None:
             for path in js_snippets:
@@ -46,14 +46,22 @@ class BrowserInterface:
     def reload(self):
         self.driver.refresh()
 
-    def get_symbols(self,):
+    def get_watchlist(self,):
         # elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")
         elements = self.driver.execute_script("""return document.querySelectorAll("[class*=symbolNameText]")""")
         for element in elements:
-            self.symbol_selectors[element.get_attribute("innerText")] = element
-        return self.symbol_selectors
+            self.watchlist_selectors[element.get_attribute("innerText")] = element
+        return self.watchlist_selectors
 
     def change_symbol(self, symbol: str):
-       element = self.symbol_selectors.get(symbol)
+       element = self.watchlist_selectors.get(symbol)
        if element is not None:
            self._click_element(element)
+
+    def iterate_watchlist(self, interval=1):
+        if len(self.watchlist_selectors.keys()) == 0:
+            self.get_watchlist()
+        
+        for sym in self.watchlist_selectors.keys():
+            self.change_symbol(sym)
+            time.sleep(interval)
