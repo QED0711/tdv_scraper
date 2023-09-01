@@ -43,7 +43,8 @@ listenToSocket(({ data }) => {
             const symbolName = data.match(/"name":"\w+"/i)?.[0];
             if (chartDataRaw?.length > 200) {
                 const parsed = chartDataRaw.map((dataPoint) => JSON.parse(dataPoint));
-                const symbol = symbolName?.split?.(":")?.[1]?.slice?.(1, -1);
+                let symbol = symbolName?.split?.(":")?.[1]?.slice?.(1, -1);
+                symbol ??= document.querySelector("[data-symbol-short][data-active=true]").querySelector("[class*=symbolNameText]").innerText; 
                 /* TODO: when symbol is null, determine symbol by finding the current active clicked watchlist element */
                 
                 // window._activeChart = { symbol, chart: parsed };

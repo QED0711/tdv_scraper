@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import asyncio, websockets, ssl
+import asyncio, websockets, ssl, json
 
 async def handler(websocket, path):
     # on connection
@@ -7,7 +7,9 @@ async def handler(websocket, path):
     
     try:
         async for message in websocket:
-            print(message)
+            parsed = json.loads(message)
+            if("symbol" in parsed and "chart" in parsed):
+                print(parsed["symbol"], parsed["chart"][-1])
             # your code here
     
     finally:

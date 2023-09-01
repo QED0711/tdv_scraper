@@ -47,13 +47,11 @@ class BrowserInterface:
         self.driver.refresh()
 
     def get_symbols(self,):
-        elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")
+        # elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")
+        elements = self.driver.execute_script("""return document.querySelectorAll("[class*=symbolNameText]")""")
         for element in elements:
             self.symbol_selectors[element.get_attribute("innerText")] = element
         return self.symbol_selectors
-        # TODO: write utility functions to "click" and element (move mouse to and click)
-        # once we have the symbols, parse out the symbol name and store in dict in this format {sym_name: element}
-
 
     def change_symbol(self, symbol: str):
        element = self.symbol_selectors.get(symbol)
