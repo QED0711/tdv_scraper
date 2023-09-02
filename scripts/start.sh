@@ -1,5 +1,11 @@
 #!/bin/bash
 
-# Xvfb :99 -screen 0 1024x768x24 &
+tmux new-session -d -s tdv
 
-python main.py
+tmux send-keys -t tdv './main.py' C-m
+
+tmux split-window -h -t tdv
+
+tmux send-keys -t tdv './server.py' C-m
+
+tail -f /dev/null

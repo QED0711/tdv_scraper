@@ -14,10 +14,12 @@ async def handler(websocket, path):
         async for message in websocket:
             parsed = json.loads(message)
             if("symbol" in parsed and "chart" in parsed):
+                sym = parsed["symbol"]
                 df = pd.DataFrame(parsed["chart"], columns=("time", "open", "high", "low", "close", "volume"))
                 df.time = pd.to_datetime(df.time, unit="s", utc=True).dt.tz_convert("America/New_York").dt.tz_localize(None)
-                out_path = os.path.join(BASE_PATH, f"{parsed['symbol']}.csv")
+                out_path = os.path.join(BASE_PATH, f"{sym}.csv")
                 df.to_csv(out_path, index=False)
+                print(f"{str(datetime.datetime.now().replace(microsecond=0))}: Received {sym}")
                 # TODO: save a record of when each symbol was updated in the chart date
                 # TODO: append data from each message so we can maintain longer periods?
             if("heartbeat" in parsed):
