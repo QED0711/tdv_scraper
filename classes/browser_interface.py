@@ -1,4 +1,4 @@
-import time
+import os, time
 
 from typing import Union, List
 from selenium import webdriver
@@ -6,6 +6,8 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+
+from IPython.display import Image
 
 class BrowserInterface:
 
@@ -45,6 +47,16 @@ class BrowserInterface:
 
     def reload(self):
         self.driver.refresh()
+
+    def screenshot(self, path: str="/app/screenshots/screenshot.png", show: bool=False):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        self.driver.save_screenshot(path)
+        if show:
+            return Image(path)
+
+    ####################
+    ##### SCRAPING #####
+    ####################
 
     def get_watchlist(self,):
         # elements = self.driver.execute_script("""return document.querySelector("[class^='listContainer']").querySelectorAll("[class*='symbolNameText']")""")
