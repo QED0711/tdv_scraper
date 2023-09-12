@@ -3,3 +3,4 @@ __pycache__
 ssl/*.pem
 charts
 screenshots
+keys.py

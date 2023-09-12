@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     jupyter-core \
     jupyter-notebook \
+    curl \
     wget \
     vim \
     nano \
