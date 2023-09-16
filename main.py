@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os, time, datetime, pdb
+import os, time, datetime, traceback, pdb
 from classes.browser_interface import BrowserInterface
 from classes.errors import WatchlistNotFoundError
 from environment import HEADLESS_SELENIUM
@@ -34,16 +34,26 @@ def main():
         browser.screenshot(f"/app/screenshots/{str(datetime.date.today())}.png")
         watchlist_attempts = 0
     except Exception as e:
+        traceback.print_exc()
         os.system(f"""
             curl \
-            -H "tdv scraper up" \
-            -H "Priority: default" \
-            -H "Tags: white_check_mark" \
-            -d "tdv scraper status: healthy" \
+            -H "tdv scraper down" \
+            -H "Priority: max" \
+            -H "Tags: warning" \
+            -d "tdv scraper status: selenium browser error" \
             {ntfy_url}
         """)
+        exit(1)
     
     
+    os.system(f"""
+        curl \
+        -H "tdv scraper up" \
+        -H "Priority: default" \
+        -H "Tags: white_check_mark" \
+        -d "tdv scraper status: selenium reading tdv data" \
+        {ntfy_url}
+    """)
 
     #########################
     ##### GET WATCHLIST #####

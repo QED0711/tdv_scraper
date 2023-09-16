@@ -34,4 +34,8 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
+# Add a new group and user with specified UID and GID
+RUN groupadd -g 1000 tdvgroup && \
+    useradd -u 1000 -g tdvgroup -ms /bin/bash tdv
+
 CMD ["./scripts/start.sh"]
